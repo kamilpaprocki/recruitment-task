@@ -15,7 +15,7 @@ public class WallTest implements SampleBlocks {
     public void should_return_any_block_when_is_color_given() {
 
         //given
-        List<Block> blocks = Arrays.asList(redGlassBlock(), greenGlassBlock(), blackSteelBlock(), redBrickBlock());
+        List<Block> blocks = Arrays.asList(redGlassBlock(), greenGlassBlock(), blackSteelBlockWithRedBrickBlockAndGreenGlassBlock(), redBrickBlock());
         String color = "red";
         Wall wall = new Wall(blocks);
         //when
@@ -25,9 +25,22 @@ public class WallTest implements SampleBlocks {
     }
 
     @Test
+    public void should_return_block_in_composite_block_when_given_color_is_only_this_block(){
+
+        //given
+        List<Block> blocks = Arrays.asList(redGlassBlock(), blackSteelBlockWithRedBrickBlockAndGreenGlassBlock(), blackSteelBlockWithWhiteStoneBlock());
+        String color = "white";
+        Wall wall = new Wall(blocks);
+        //when
+        Block blockByColor = wall.findBlockByColor(color).get();
+        //then
+        assertThat(blockByColor).isEqualTo(whiteStoneBlock());
+    }
+
+    @Test
     public void should_throw_WrongArgumentException_when_given_color_is_null() {
         //given
-        List<Block> blocks = Arrays.asList(redGlassBlock(), greenGlassBlock(), blackSteelBlock(), redBrickBlock());
+        List<Block> blocks = Arrays.asList(redGlassBlock(), greenGlassBlock(), blackSteelBlockWithRedBrickBlockAndGreenGlassBlock(), redBrickBlock());
         String color = null;
         Wall wall = new Wall(blocks);
         //when //then
@@ -38,20 +51,20 @@ public class WallTest implements SampleBlocks {
     public void should_return_list_of_blocks_when_is_given_material() {
 
         //given
-        List<Block> blocks = Arrays.asList(redGlassBlock(), greenGlassBlock(), blackSteelBlock(), redBrickBlock());
+        List<Block> blocks = Arrays.asList(redGlassBlock(), greenGlassBlock(), blackSteelBlockWithRedBrickBlockAndGreenGlassBlock(), redBrickBlock());
         String material = "glass";
         Wall wall = new Wall(blocks);
         //when
         List<Block> expectedBlocks = wall.findBlocksByMaterial(material);
         //then
-        assertThat(expectedBlocks.size()).isEqualTo(2);
+        assertThat(expectedBlocks.size()).isEqualTo(3);
     }
 
     @Test
     public void should_throw_WrongArgumentException_when_given_material_is_null() {
 
         //given
-        List<Block> blocks = Arrays.asList(redGlassBlock(), greenGlassBlock(), blackSteelBlock(), redBrickBlock());
+        List<Block> blocks = Arrays.asList(redGlassBlock(), greenGlassBlock(), blackSteelBlockWithRedBrickBlockAndGreenGlassBlock(), redBrickBlock());
         String material = null;
         Wall wall = new Wall(blocks);
         //when //then
@@ -61,11 +74,11 @@ public class WallTest implements SampleBlocks {
     @Test
     public void should_return_number_of_blocks_in_structure() {
         //given
-        List<Block> blocks = Arrays.asList(redGlassBlock(), greenGlassBlock(), blackSteelBlock(), redBrickBlock());
+        List<Block> blocks = Arrays.asList(redGlassBlock(), greenGlassBlock(), blackSteelBlockWithRedBrickBlockAndGreenGlassBlock(), redBrickBlock());
         Wall wall = new Wall(blocks);
         //when
         int expectedNumberOfBlocks = wall.count();
         //then
-        assertThat(expectedNumberOfBlocks).isEqualTo(4);
+        assertThat(expectedNumberOfBlocks).isEqualTo(6);
     }
 }
