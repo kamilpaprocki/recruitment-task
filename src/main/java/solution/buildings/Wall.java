@@ -2,6 +2,7 @@ package solution.buildings;
 
 import solution.exceptions.WrongArgumentException;
 import solution.materials.Block;
+import solution.materials.CompositeBlockMaterial;
 import solution.materials.Structure;
 
 import java.util.List;
@@ -35,7 +36,11 @@ public class Wall implements Structure {
 
     @Override
     public int count() {
-        return blocks.size();
+        int blocksNumber = blocks.size();
+
+        blocksNumber += blocks.stream().filter(b -> b instanceof CompositeBlockMaterial).mapToInt(b -> ((CompositeBlockMaterial) b).getBlocks().size()).sum();
+
+        return blocksNumber;
     }
 
     @Override
