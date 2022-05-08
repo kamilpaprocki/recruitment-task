@@ -5,10 +5,12 @@ import solution.materials.Block;
 import solution.materials.CompositeBlockMaterial;
 import solution.materials.Structure;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Wall implements Structure {
 
@@ -23,7 +25,20 @@ public class Wall implements Structure {
         if (color == null) {
             throw new WrongArgumentException("Color cannot be a null");
         }
-        return blocks.stream().filter(b -> b.getColor().equalsIgnoreCase(color)).findFirst();
+        Stream<Block> blocksInWall = blocks.stream();
+        return Stream.concat(blocksInWall, blockInCompositeBlocks().stream())
+                .filter(block -> block.getColor().equalsIgnoreCase(color))
+                .findFirst();
+    }
+
+    private List<Block> blockInCompositeBlocks() {
+        List<Block> blockInCompositeBlocks = new LinkedList<>();
+        blocks.forEach(b -> {
+            if (b instanceof CompositeBlockMaterial) {
+                blockInCompositeBlocks.addAll(((CompositeBlockMaterial) b).getBlocks());
+            }
+        });
+        return blockInCompositeBlocks;
     }
 
     @Override
@@ -31,14 +46,21 @@ public class Wall implements Structure {
         if (material == null) {
             throw new WrongArgumentException("Material cannot be a null");
         }
-        return blocks.stream().filter(b -> material.equalsIgnoreCase(b.getMaterial())).collect(Collectors.toList());
+        Stream<Block> blocksInWall = blocks.stream();
+        return Stream.concat(blocksInWall, blockInCompositeBlocks()
+                .stream())
+                .filter(block -> block.getMaterial().equalsIgnoreCase(material))
+                .collect(Collectors.toList());
     }
 
     @Override
     public int count() {
         int blocksNumber = blocks.size();
 
-        blocksNumber += blocks.stream().filter(b -> b instanceof CompositeBlockMaterial).mapToInt(b -> ((CompositeBlockMaterial) b).getBlocks().size()).sum();
+        blocksNumber += blocks.stream()
+                .filter(b -> b instanceof CompositeBlockMaterial)
+                .mapToInt(b -> ((CompositeBlockMaterial) b).getBlocks().size())
+                .sum();
 
         return blocksNumber;
     }
